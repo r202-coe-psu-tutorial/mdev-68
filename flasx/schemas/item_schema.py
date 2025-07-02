@@ -1,4 +1,4 @@
-from unicodedata import decimal
+import decimal
 from pydantic import BaseModel
 from . import receiver_schema
 
