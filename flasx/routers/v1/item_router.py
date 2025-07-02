@@ -5,6 +5,8 @@ import decimal
 from ...schemas import receiver_schema
 
 from ...schemas import item_schema
+from ...models import item_model
+from ... import models
 
 router = APIRouter(prefix="/items", tags=["items"])
 
@@ -16,14 +18,11 @@ router = APIRouter(prefix="/items", tags=["items"])
 )
 async def read_item(
     item_id: int, page: int = 1, size_per_page: int = 50
-) -> item_schema.Item:
-    return item_schema.Item(
-        name="Sample Item",
-        delivery_price=decimal.Decimal("10.99"),
-        receiver=receiver_schema.Receiver(
-            id=1, name="John Doe", email="john@example.com"
-        ),
-    )
+) -> item_model.Item:
+    db_item = models.session.get(item_model.Item, item_id)
+    if not db_item:
+        return None
+    return db_item
 
 
 @router.get(
@@ -44,8 +43,12 @@ async def read_items() -> list[item_schema.Item]:
     summary="Create a new item",
     description="Create a new item with the provided details.",
 )
-async def create_item(item: item_schema.Item) -> item_schema.Item:
-    return item
+async def create_item(item: item_schema.Item) -> item_model.Item:
+    print(f"Creating item: {item.model_dump()}")
+    db_item = item_model.Item(**item.model_dump(exclude_unset=True))
+    models.session.add(db_item)
+    models.session.commit()
+    return db_item
 
 
 @router.put(
