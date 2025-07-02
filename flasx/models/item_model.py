@@ -14,4 +14,6 @@ class Item(item_schema.Item, SQLModel, table=True):
 
     # Relationship
     # receiver: Optional["receiver_model.Receiver"] = Relationship(back_populates="items")
+    # receiver_id: int = Field(default=None, foreign_key="receiver.id")
+
     # receiver: Optional["receiver_model.Receiver"] = Relationship()
