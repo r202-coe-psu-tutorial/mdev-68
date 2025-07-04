@@ -1,5 +1,6 @@
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends
+from datetime import datetime
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -113,11 +114,7 @@ async def update_receiver(
     # Update only provided fields
     update_data = receiver_update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
-        setattr(db_receiver, field, value)
-
-    # Update timestamp
-    from datetime import datetime
-
+        setattr(db_receiver, field, value)  # Update timestamp
     db_receiver.updated_at = datetime.now()
 
     await session.commit()
@@ -175,8 +172,6 @@ async def activate_receiver(
         raise HTTPException(status_code=404, detail="Receiver not found")
 
     db_receiver.is_active = True
-    from datetime import datetime
-
     db_receiver.updated_at = datetime.now()
 
     await session.commit()
@@ -200,8 +195,6 @@ async def deactivate_receiver(
         raise HTTPException(status_code=404, detail="Receiver not found")
 
     db_receiver.is_active = False
-    from datetime import datetime
-
     db_receiver.updated_at = datetime.now()
 
     await session.commit()

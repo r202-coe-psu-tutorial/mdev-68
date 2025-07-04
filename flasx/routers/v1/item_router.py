@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from typing import Annotated
+from datetime import datetime
 
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -84,8 +84,6 @@ async def update_item(
         setattr(db_item, field, value)
 
     # Update timestamp
-    from datetime import datetime
-
     db_item.updated_at = datetime.now()
 
     await session.commit()

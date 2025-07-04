@@ -11,6 +11,11 @@ from sqlalchemy.orm import sessionmaker
 
 # Import models after setting up the database components
 from .receiver_model import *
+from .sender_model import *
+from .station_model import *
+from .vehicle_model import *
+from .delivery_staff_model import *
+from .parcel_model import *
 from .item_model import *
 
 connect_args = {"check_same_thread": False}
