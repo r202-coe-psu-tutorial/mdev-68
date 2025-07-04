@@ -26,8 +26,8 @@ class ParcelBase(BaseModel):
     status: ParcelStatus = ParcelStatus.CREATED
     description: Optional[str] = None
     special_instructions: Optional[str] = None
-    sender_id: int
-    receiver_id: int
+    sender_id: int  # Customer ID who sends the parcel
+    receiver_id: int  # Customer ID who receives the parcel
 
 
 class ParcelCreate(ParcelBase):

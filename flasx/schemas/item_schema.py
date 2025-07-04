@@ -12,20 +12,20 @@ class ItemBase(BaseModel):
 
 
 class ItemCreate(ItemBase):
-    receiver_id: Optional[int] = None
+    customer_id: Optional[int] = None
 
 
 class ItemUpdate(BaseModel):
     weight: Optional[float] = None
     service_price: Optional[decimal.Decimal] = None
-    receiver_id: Optional[int] = None
+    customer_id: Optional[int] = None
 
 
 class Item(ItemBase):
     id: Optional[int] = None
     created_at: Optional[datetime.datetime] = None
     updated_at: Optional[datetime.datetime] = None
-    receiver_id: Optional[int] = None
+    customer_id: Optional[int] = None
 
     class Config:
         from_attributes = True

@@ -6,7 +6,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from ..schemas import item_schema
 
 if TYPE_CHECKING:
-    from .receiver_model import Receiver
+    from .customer_model import Customer
 
 
 class Item(SQLModel, item_schema.ItemBase, table=True):
@@ -15,5 +15,5 @@ class Item(SQLModel, item_schema.ItemBase, table=True):
     updated_at: datetime.datetime = Field(default_factory=datetime.datetime.now)
 
     # Foreign key and relationship
-    receiver_id: Optional[int] = Field(default=None, foreign_key="receiver.id")
-    receiver: Optional["Receiver"] = Relationship(back_populates="items")
+    customer_id: Optional[int] = Field(default=None, foreign_key="customer.id")
+    customer: Optional["Customer"] = Relationship()

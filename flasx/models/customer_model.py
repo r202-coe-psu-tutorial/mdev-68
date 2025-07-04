@@ -6,18 +6,25 @@ if TYPE_CHECKING:
     from .parcel_model import Parcel
 
 
-class SenderBase(SQLModel):
+class CustomerBase(SQLModel):
     name: str = Field(index=True)
-    email: str = Field(index=True)
+    email: str = Field(unique=True, index=True)
     phone: Optional[str] = None
     address: Optional[str] = None
     is_active: bool = Field(default=True)
 
 
-class Sender(SenderBase, table=True):
+class Customer(CustomerBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
 
-    # Relationship
-    parcels: List["Parcel"] = Relationship(back_populates="sender")
+    # Relationships
+    sent_parcels: List["Parcel"] = Relationship(
+        back_populates="sender",
+        sa_relationship_kwargs={"foreign_keys": "Parcel.sender_id"},
+    )
+    received_parcels: List["Parcel"] = Relationship(
+        back_populates="receiver",
+        sa_relationship_kwargs={"foreign_keys": "Parcel.receiver_id"},
+    )

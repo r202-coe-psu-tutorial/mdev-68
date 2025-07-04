@@ -1,10 +1,9 @@
-# Pydantic Models
-import datetime
 from typing import Optional
+from datetime import datetime
 from pydantic import BaseModel, EmailStr
 
 
-class ReceiverBase(BaseModel):
+class CustomerBase(BaseModel):
     name: str
     email: EmailStr
     phone: Optional[str] = None
@@ -12,11 +11,11 @@ class ReceiverBase(BaseModel):
     is_active: bool = True
 
 
-class ReceiverCreate(ReceiverBase):
+class CustomerCreate(CustomerBase):
     pass
 
 
-class ReceiverUpdate(BaseModel):
+class CustomerUpdate(BaseModel):
     name: Optional[str] = None
     email: Optional[EmailStr] = None
     phone: Optional[str] = None
@@ -24,10 +23,10 @@ class ReceiverUpdate(BaseModel):
     is_active: Optional[bool] = None
 
 
-class Receiver(ReceiverBase):
+class Customer(CustomerBase):
     id: int
-    created_at: datetime.datetime
-    updated_at: datetime.datetime
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         from_attributes = True

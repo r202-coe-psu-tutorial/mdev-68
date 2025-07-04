@@ -5,8 +5,7 @@ from enum import Enum
 from sqlmodel import SQLModel, Field, Relationship
 
 if TYPE_CHECKING:
-    from .sender_model import Sender
-    from .receiver_model import Receiver
+    from .customer_model import Customer
     from .station_model import Station
     from .vehicle_model import Vehicle
     from .delivery_staff_model import DeliveryStaff
@@ -41,8 +40,8 @@ class Parcel(ParcelBase, table=True):
     updated_at: datetime = Field(default_factory=datetime.now)
 
     # Foreign keys
-    sender_id: int = Field(foreign_key="sender.id")
-    receiver_id: int = Field(foreign_key="receiver.id")
+    sender_id: int = Field(foreign_key="customer.id")
+    receiver_id: int = Field(foreign_key="customer.id")
     origin_station_id: Optional[int] = Field(default=None, foreign_key="station.id")
     destination_station_id: Optional[int] = Field(
         default=None, foreign_key="station.id"
@@ -53,8 +52,14 @@ class Parcel(ParcelBase, table=True):
     )
 
     # Relationships
-    sender: "Sender" = Relationship(back_populates="parcels")
-    receiver: "Receiver" = Relationship(back_populates="parcels")
+    sender: "Customer" = Relationship(
+        back_populates="sent_parcels",
+        sa_relationship_kwargs={"foreign_keys": "Parcel.sender_id"},
+    )
+    receiver: "Customer" = Relationship(
+        back_populates="received_parcels",
+        sa_relationship_kwargs={"foreign_keys": "Parcel.receiver_id"},
+    )
     origin_station: Optional["Station"] = Relationship(
         back_populates="parcels_sent",
         sa_relationship_kwargs={"foreign_keys": "Parcel.origin_station_id"},
