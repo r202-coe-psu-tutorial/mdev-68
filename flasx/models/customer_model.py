@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 class CustomerBase(SQLModel):
     name: str = Field(index=True)
     email: str = Field(unique=True, index=True)
-    phone: Optional[str] = None
+    phone: str | None = None
     address: Optional[str] = None
     is_active: bool = Field(default=True)
 
@@ -20,11 +20,11 @@ class Customer(CustomerBase, table=True):
     updated_at: datetime = Field(default_factory=datetime.now)
 
     # Relationships
-    sent_parcels: List["Parcel"] = Relationship(
+    sent_parcels: list["Parcel"] = Relationship(
         back_populates="sender",
         sa_relationship_kwargs={"foreign_keys": "Parcel.sender_id"},
     )
-    received_parcels: List["Parcel"] = Relationship(
+    received_parcels: list["Parcel"] = Relationship(
         back_populates="receiver",
         sa_relationship_kwargs={"foreign_keys": "Parcel.receiver_id"},
     )

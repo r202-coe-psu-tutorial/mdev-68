@@ -13,3 +13,8 @@ router.include_router(station_router.router)
 router.include_router(vehicle_router.router)
 router.include_router(delivery_staff_router.router)
 router.include_router(parcel_router.router)
+
+# add test router to v1
+from . import hello_router
+
+router.include_router(hello_router.router)
