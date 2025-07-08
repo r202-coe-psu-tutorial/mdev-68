@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from decimal import Decimal
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from enum import Enum
 
 
@@ -59,8 +59,7 @@ class Parcel(ParcelBase):
     vehicle_id: Optional[int] = None
     delivery_staff_id: Optional[int] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ParcelTracking(BaseModel):
@@ -73,5 +72,4 @@ class ParcelTracking(BaseModel):
     origin_station_name: Optional[str] = None
     destination_station_name: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
