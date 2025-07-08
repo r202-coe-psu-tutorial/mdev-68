@@ -5,8 +5,8 @@ from pydantic import BaseModel, EmailStr
 
 class CustomerBase(BaseModel):
     name: str
-    email: EmailStr
-    phone: Optional[str] = None
+    email: EmailStr | None = None
+    phone: str
     address: Optional[str] = None
     is_active: bool = True
 
