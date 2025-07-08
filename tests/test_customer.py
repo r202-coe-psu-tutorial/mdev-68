@@ -1,29 +1,35 @@
 import pytest
 from fastapi.testclient import TestClient
 from flasx.main import app
-from sqlmodel import SQLModel, Session, create_engine
-from sqlalchemy.pool import StaticPool
+from sqlmodel import SQLModel
+
 from flasx.models import get_session
+
+from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
+from sqlalchemy.orm import sessionmaker
 
 
 # Use synchronous engine and session for compatibility with TestClient
 @pytest.fixture(name="session")
-def session_fixture():
-    engine = create_engine(
-        "sqlite:///:memory:",
+async def session_fixture():
+    engine = create_async_engine(
+        "sqlite+aiosqlite:///:memory:",
         connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
     )
     SQLModel.metadata.drop_all(engine)
     SQLModel.metadata.create_all(engine)
-    with Session(engine) as session:
+
+    async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    async with async_session() as session:
         yield session
 
 
 @pytest.fixture(name="client")
 def client_fixture(session):
-    def get_session_override():
-        return session
+    async def get_session_override():
+        print("check session", type(session))
+        yield session
 
     app.dependency_overrides[get_session] = get_session_override
 

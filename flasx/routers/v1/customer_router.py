@@ -93,6 +93,7 @@ async def create_customer(
 ) -> customer_schema.Customer:
     """Create a new customer."""
     # Check if email already exists
+    print("check session", type(session))
     query = select(Customer).where(Customer.email == customer.email)
     result = await session.exec(query)
     existing_customer = result.first()

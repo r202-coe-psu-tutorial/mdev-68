@@ -15,6 +15,7 @@ from .station_model import *
 from .vehicle_model import *
 from .delivery_staff_model import *
 from .parcel_model import *
+from .user_model import *
 
 connect_args = {"check_same_thread": False}
 
@@ -38,7 +39,7 @@ async def init_db():
 async def create_db_and_tables():
     """Create database tables."""
     async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.drop_all)
+        # await conn.run_sync(SQLModel.metadata.drop_all)
         await conn.run_sync(SQLModel.metadata.create_all)
 
 
