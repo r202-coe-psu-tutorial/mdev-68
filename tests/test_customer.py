@@ -10,14 +10,20 @@ from flasx.models import get_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
+import os
+from dotenv import load_dotenv
 
 
 @pytest_asyncio.fixture
 async def engine():
     """Create test database engine."""
+    load_dotenv(dotenv_path=".env.test")
+    sql_url = os.getenv("SQL_CONNECTION_STRING")
     engine = create_async_engine(
-        "sqlite+aiosqlite:///:memory:",
-        connect_args={"check_same_thread": False},
+        sql_url,
+        connect_args=(
+            {"check_same_thread": False} if sql_url.startswith("sqlite") else {}
+        ),
     )
 
     # Create tables
