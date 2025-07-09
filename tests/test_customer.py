@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 async def engine():
     """Create test database engine."""
     load_dotenv(dotenv_path=".env.test")
-    sql_url = os.getenv("SQL_CONNECTION_STRING")
+    sql_url = os.getenv("SQLDB_URL")
     engine = create_async_engine(
         sql_url,
         connect_args=(
