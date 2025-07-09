@@ -1,5 +1,4 @@
 import pytest
-import pytest_asyncio
 import httpx
 from httpx import AsyncClient
 from flasx.main import app
@@ -14,7 +13,7 @@ import os
 from dotenv import load_dotenv
 
 
-@pytest_asyncio.fixture
+@pytest.fixture
 async def engine():
     """Create test database engine."""
     load_dotenv(dotenv_path=".env.test")
@@ -35,7 +34,7 @@ async def engine():
     await engine.dispose()
 
 
-@pytest_asyncio.fixture
+@pytest.fixture
 async def session(engine):
     """Create test database session."""
     async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
@@ -43,7 +42,7 @@ async def session(engine):
         yield session
 
 
-@pytest_asyncio.fixture
+@pytest.fixture
 async def client(session):
     """Create test client with dependency override."""
 
