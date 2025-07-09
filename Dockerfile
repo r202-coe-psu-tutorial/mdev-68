@@ -1,6 +1,6 @@
 FROM debian:sid
 RUN rm /etc/apt/sources.list.d/*
-RUN echo 'deb http://mirror.kku.ac.th/debian/ sid main contrib non-free' > /etc/apt/sources.list
+RUN echo 'deb http://mirror.psu.ac.th/debian/ sid main contrib non-free' > /etc/apt/sources.list
 
 RUN apt update && apt upgrade -y && \
     apt install -y python3 python3-dev python3-pip python3-venv \
