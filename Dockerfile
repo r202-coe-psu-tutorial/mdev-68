@@ -17,14 +17,14 @@ RUN $PYTHON -m pip install wheel poetry
 
 WORKDIR /app
 COPY poetry.lock pyproject.toml README.md /app/
-COPY . /app
+
 
 RUN . /venv/bin/activate \
     && poetry config virtualenvs.create false \
-    && poetry install --no-interaction --only main
-
-
+    && poetry install --no-interaction --only main --no-root
 
 EXPOSE 8000
 CMD [ "/venv/bin/python3", "-m", "fastapi", "run", "flasx/main.py" ]
 
+
+COPY . /app
