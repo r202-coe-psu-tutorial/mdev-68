@@ -1,25 +1,20 @@
 {
     "name": "FLASX Dev Container",
-    "build": {
-        "dockerfile": "../Dockerfile",
-        "context": "..",
-        "args": {
-            "INSTALL_DEV": "true"
-        }
-    },
-    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
-    "workspaceFolder": "/workspace",
-    "remoteUser": "app",
-    "containerEnv": {
-        "PATH": "/venv/bin:${PATH}",
-        "VIRTUAL_ENV": "/venv",
-        "SQLDB_URL": "sqlite+aiosqlite:///./data/database.db",
-        "SQL_CONNECTION_STRING": "sqlite+aiosqlite:///./data/database.db",
-        "ENVIRONMENT": "development"
-    },
-    "mounts": [
-        "source=${localWorkspaceFolder}/data,target=/workspace/data,type=bind"
+    "dockerComposeFile": [
+        "docker-compose.yml"
     ],
+    "service": "app",
+    "workspaceFolder": "/home/app/code",
+    "shutdownAction": "stopCompose",
+    "containerEnv": {
+        "PATH": "/home/app/venv/bin:${PATH}",
+        "VIRTUAL_ENV": "/home/app/venv",
+        "PYTHONPATH": "/home/app/code",
+        "ENVIRONMENT": "development",
+        "DEBUG": "true",
+        "LOG_LEVEL": "DEBUG"
+    },
+    "remoteUser": "app",
     "customizations": {
         "vscode": {
             "extensions": [
@@ -39,8 +34,8 @@
                 "charliermarsh.ruff"
             ],
             "settings": {
-                "python.pythonPath": "/venv/bin/python3",
-                "python.defaultInterpreterPath": "/venv/bin/python3",
+                "python.pythonPath": "/home/app/venv/bin/python3",
+                "python.defaultInterpreterPath": "/home/app/venv/bin/python3",
                 "python.formatting.provider": "black",
                 "python.linting.enabled": true,
                 "python.linting.pylintEnabled": true,
@@ -55,26 +50,44 @@
                     "source.organizeImports": "explicit"
                 },
                 "python.terminal.activateEnvironment": false,
-                "terminal.integrated.defaultProfile.linux": "bash"
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "files.watcherExclude": {
+                    "**/node_modules/**": true,
+                    "**/.git/objects/**": true,
+                    "**/.git/subtree-cache/**": true,
+                    "**/data/**": true,
+                    "**/logs/**": true,
+                    "**/__pycache__/**": true,
+                    "**/.*cache/**": true
+                }
             }
         }
     },
     "forwardPorts": [
-        8000
+        8000,
+        5432,
+        6379
     ],
     "portsAttributes": {
         "8000": {
             "label": "FastAPI App",
             "onAutoForward": "notify"
+        },
+        "5432": {
+            "label": "PostgreSQL",
+            "onAutoForward": "silent"
+        },
+        "6379": {
+            "label": "Redis",
+            "onAutoForward": "silent"
         }
     },
-    "postCreateCommand": "cd /workspace && mkdir -p data && . /venv/bin/activate && poetry install --with dev",
+    "postCreateCommand": "bash -c 'cd /home/app/code && mkdir -p data logs && poetry install --no-interaction'",
     "features": {
         "ghcr.io/devcontainers/features/git:1": {},
-        "ghcr.io/devcontainers/features/github-cli:1": {}
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
     },
-    "runArgs": [
-        "--env-file",
-        ".env"
-    ]
+    "initializeCommand": "mkdir -p ${localWorkspaceFolder}/data ${localWorkspaceFolder}/logs",
+    "updateContentCommand": "poetry install --no-interaction"
 }
