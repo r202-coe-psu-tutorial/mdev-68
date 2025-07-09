@@ -20,12 +20,12 @@ services:
       - SQLDB_URL=sqlite+aiosqlite:///./data/database.db
       - SQL_CONNECTION_STRING=sqlite+aiosqlite:///./data/database.db
       - LOG_LEVEL=DEBUG
-      - REDIS_URL=redis://redis:6379/0
     volumes:
       # Mount source code for hot reloading
       - .:/home/app/code:rw
       - ./data:/home/app/data:rw
       - ./logs:/home/app/logs:rw
+
       # Persist virtual environment and cache
       - dev_venv:/home/app/venv
       - dev_cache:/home/app/.cache
@@ -34,22 +34,15 @@ services:
       bash -c "
         cd /home/app/code &&
         poetry install --no-interaction &&
-        python -m fastapi dev flasx/main.py --host 0.0.0.0 --port 8000 --reload
+        poetry run fastapi dev flasx/main.py --host 0.0.0.0 --port 8000 --reload
       "
     depends_on:
-      - redis
       - db
     networks:
       - flasx-dev-network
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
 
   # PostgreSQL Database for Development
-  db:
+  postgresqldb:
     image: postgres:15-alpine
     container_name: flasx-postgres-dev
     restart: unless-stopped
@@ -70,25 +63,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  # Redis for Caching and Sessions
-  redis:
-    image: redis:7-alpine
-    container_name: flasx-redis-dev
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_dev_data:/data
-      - ./config/redis.conf:/usr/local/etc/redis/redis.conf:ro
-    command: redis-server /usr/local/etc/redis/redis.conf
-    networks:
-      - flasx-dev-network
-    healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
 
   # pgAdmin for Database Management
   pgadmin:
@@ -217,13 +191,7 @@ services:
 volumes:
   postgres_dev_data:
     driver: local
-  redis_dev_data:
-    driver: local
   pgadmin_dev_data:
-    driver: local
-  grafana_dev_data:
-    driver: local
-  prometheus_dev_data:
     driver: local
   dev_venv:
     driver: local
@@ -238,4 +206,4 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.18.0.0/16
+        - subnet: 10.0.0.0/16
