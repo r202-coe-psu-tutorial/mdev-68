@@ -9,6 +9,8 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 from sqlalchemy.orm import sessionmaker
 
+from flasx.core import config
+
 # Import models after setting up the database components
 from .customer_model import *
 from .station_model import *
@@ -26,11 +28,13 @@ async def init_db():
     """Initialize the database engine and create tables."""
     global engine
 
+    settings = config.get_settings()
+    print("SQLDB_URL:", settings.SQLDB_URL)
     engine = create_async_engine(
-        "sqlite+aiosqlite:///database.db",
+        settings.SQLDB_URL,
         echo=True,
         future=True,
-        connect_args=connect_args,
+        # connect_args=connect_args,
     )
 
     await create_db_and_tables()

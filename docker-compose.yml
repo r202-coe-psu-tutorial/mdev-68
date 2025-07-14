@@ -7,7 +7,7 @@ services:
       args:
         - INSTALL_DEV=true
     image: flasx:dev
-    container_name: flasx-development
+    container_name: flasx-dev
     restart: unless-stopped
     ports:
       - "8000:8000"
@@ -15,7 +15,7 @@ services:
       - ENVIRONMENT=development
       - DEBUG=true
       - RELOAD=true
-      - SQLDB_URL=postgresql+asyncpg://flasx_user:flasx_password@postgresqldb:5432/flasx_dev_db
+      - SQLDB_URL=postgresql+asyncpg://flasx_user:flasx_password@postgres:5432/flasx_dev_db
       - LOG_LEVEL=DEBUG
     env_file:
       - .env.dev
@@ -65,7 +65,7 @@ services:
     ports:
       - "5050:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@flasx.local
+      PGADMIN_DEFAULT_EMAIL: "admin@example.com"
       PGADMIN_DEFAULT_PASSWORD: adminadmin
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
@@ -91,7 +91,7 @@ services:
     working_dir: /home/app/code
     environment:
       - ENVIRONMENT=test
-      - SQLDB_URL=sqlite+aiosqlite:///./test_database.db
+      - SQLDB_URL=sqlite+aiosqlite:///./data/test_database.db
     command: >
       bash -c "
         cd /home/app/code &&
@@ -108,8 +108,6 @@ volumes:
   postgres_dev_data:
     driver: local
   pgadmin_dev_data:
-    driver: local
-  test_reports:
     driver: local
 
 # Development network
