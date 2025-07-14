@@ -15,7 +15,6 @@ services:
     environment:
       - ENVIRONMENT=production
       - SQLDB_URL=sqlite+aiosqlite:///./data/database.db
-      - SQL_CONNECTION_STRING=sqlite+aiosqlite:///./data/database.db
     volumes:
       - ./data:/app/data:rw
       - ./logs:/app/logs:rw
@@ -33,10 +32,33 @@ services:
     networks:
       - flasx-network
 
+  postgresqldb:
+    image: postgres:17-alpine
+    container_name: flasx-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: flasxdb
+      POSTGRES_USER: flasx_user
+      POSTGRES_PASSWORD: flasx_password
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - flasx-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U flasx_user -d flasxdb" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 networks:
   flasx-network:
     driver: bridge
 
 volumes:
   flasx-data:
-  driver: local
+    driver: local
+  postgres_data:
+    driver: local
