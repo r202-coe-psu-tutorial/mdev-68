@@ -1,10 +1,14 @@
 FROM debian:sid-slim
 
+# Use official Debian repositories instead of mirror
+RUN rm -f /etc/apt/sources.list.d/* && \
+    echo 'deb http://mirror.kku.ac.th/debian sid main' > /etc/apt/sources.list 
+
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     DEBIAN_FRONTEND=noninteractive \
-    PATH="/home/app/venv/bin:$PATH"
+    PATH="/home/app/code/.venv/bin:$PATH"
 
 # Install system dependencies for development
 RUN apt-get update && apt-get install -y \

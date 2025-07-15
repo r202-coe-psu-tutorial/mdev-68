@@ -5,9 +5,9 @@ import datetime
 
 class PerformanceTests(HttpUser):
     wait_time = between(1, 3)
-    host = "http://localhost:8000"
+    host = "https://ctf.coe.psu.ac.th"
 
-    @task(3)
+    @task(20)
     def test_index(self):
-        res = self.client.get(f"/health")
-        print("response", datetime.datetime.now(), res.json())
+        res = self.client.get(f"/")
+        print("response", datetime.datetime.now(), res)
