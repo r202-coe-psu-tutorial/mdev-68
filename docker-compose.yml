@@ -91,7 +91,7 @@ services:
     working_dir: /home/app/code
     environment:
       - ENVIRONMENT=test
-      - SQLDB_URL=sqlite+aiosqlite:///./data/test_database.db
+      - SQLDB_URL="sqlite+aiosqlite:///:memory:"
     command: >
       bash -c "
         cd /home/app/code &&
